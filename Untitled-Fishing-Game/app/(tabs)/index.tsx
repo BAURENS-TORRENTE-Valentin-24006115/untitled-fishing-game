@@ -4,10 +4,23 @@ import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import useAccelerometer from '../../components/move/useAccelerometer'
-import {use, useEffect, useRef} from "react";
+import {useEffect, useRef, useState} from "react";
 
 export default function HomeScreen({}) {
     const { x, y, z, magnitude} = useAccelerometer();
+    const [message, setMessage] = useState<string>("en attente")
+    const isWaiting = useRef<boolean>(false);
+
+  useEffect(() => {
+    if (magnitude >= 4 && !isWaiting.current){
+      isWaiting.current = true;
+      setMessage("la ligne est lancer");
+      setTimeout(()=> {
+        setMessage("en attente");
+        isWaiting.current = false
+      }, 3000);
+    }
+  }, [magnitude]);
 
     return (
     <ParallaxScrollView
@@ -25,6 +38,7 @@ export default function HomeScreen({}) {
         <ThemedText>X : {x}</ThemedText>
         <ThemedText>Y : {y}</ThemedText>
         <ThemedText>Z : {z}</ThemedText>
+        <ThemedText>{message}</ThemedText>
 
       </View>
     </ParallaxScrollView>
