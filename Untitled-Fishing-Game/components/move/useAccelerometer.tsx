@@ -1,5 +1,7 @@
 import {useState, useEffect, useRef} from "react";
 import {Accelerometer} from "expo-sensors";
+import {vibrateDevice} from '../vibration/vibration'
+
 
 export default function useAccelerometer() {
   const [{x, y, z}, setData] = useState({x:0, y:0, z:0});
@@ -14,7 +16,7 @@ export default function useAccelerometer() {
     const NewMagnitude = Math.sqrt(x**2 + y**2 + z**2);
     setMagnitude(NewMagnitude)
     if (NewMagnitude >= 3){
-      console.log("canne a pêche lancer");
+      vibrateDevice();
     }
     }, [x,y,z]);
 
