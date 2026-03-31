@@ -11,14 +11,21 @@ export default function HomeScreen({}) {
     const [message, setMessage] = useState<string>("en attente")
     const isWaiting = useRef<boolean>(false);
 
+    const [circle, setCircle] = useState<boolean>(false);
+
   useEffect(() => {
     if (magnitude >= 4 && !isWaiting.current){
       isWaiting.current = true;
       setMessage("la ligne est lancer");
+      setCircle(true);
       setTimeout(()=> {
         setMessage("en attente");
         isWaiting.current = false
       }, 3000);
+    }
+
+    if (circle){
+      
     }
   }, [magnitude]);
 
@@ -39,6 +46,11 @@ export default function HomeScreen({}) {
         <ThemedText>Y : {y}</ThemedText>
         <ThemedText>Z : {z}</ThemedText>
         <ThemedText>{message}</ThemedText>
+        
+              <Image
+        style={styles.tinyLogo}
+        source={require('@/assets/UI/Godot_icon.png')}
+      />
 
       </View>
     </ParallaxScrollView>
@@ -61,5 +73,9 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     position: 'absolute',
+  },
+  tinyLogo: {
+    width: 50,
+    height: 50,
   },
 });
