@@ -23,7 +23,7 @@ export const HungerBar = ({ hunger }: HungerBarProps) => {
             {Array(fullElements).fill(null).map((_, i) => (
                 <Image
                     key={`full-${i}`}
-                    source={require('@/assets/images/UI/hunger-full.png')}
+                    source={require('@/assets/UI/fish_bar_1_sized.png')}
                     style={[styles.hungerElement, { width: elementSize, height: elementSize }]}
                 />
             ))}
@@ -31,7 +31,7 @@ export const HungerBar = ({ hunger }: HungerBarProps) => {
             {/* Élément demi (s'il existe) */}
             {hasHalf && (
                 <Image
-                    source={require('@/assets/images/UI/hunger-half.png')}
+                    source={require('@/assets/UI/fish_bar_2_sized.png')}
                     style={[styles.hungerElement, { width: elementSize, height: elementSize }]}
                 />
             )}
@@ -40,7 +40,7 @@ export const HungerBar = ({ hunger }: HungerBarProps) => {
             {Array(emptyElements).fill(null).map((_, i) => (
                 <Image
                     key={`empty-${i}`}
-                    source={require('@/assets/images/UI/hunger-empty.png')}
+                    source={require('@/assets/UI/fish_bar_3_sized.png')}
                     style={[styles.hungerElement, { width: elementSize, height: elementSize }]}
                 />
             ))}
