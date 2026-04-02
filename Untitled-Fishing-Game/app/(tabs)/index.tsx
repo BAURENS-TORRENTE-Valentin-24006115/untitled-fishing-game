@@ -1,13 +1,16 @@
-import { Image } from 'expo-image';
-import { StyleSheet, View } from 'react-native';
+import FishOverlay from '@/components/catching/fish_overlay';
+import FishingCatch from '@/components/catching/fishing_catch';
+import { HungerBar } from '@/components/hunger-bar';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import useAccelerometer from '../../components/move/useAccelerometer'
-import {useEffect, useRef, useState} from "react";
-import { HungerBar } from '@/components/hunger-bar';
-import FishingCatch from '@/components/catching/fishing_catch';
+import { Image } from 'expo-image';
+import { useEffect, useRef, useState } from "react";
+import { StyleSheet, View } from 'react-native';
+import fishesData from '../../assets/data/json/fishes.json';
+import useAccelerometer from '../../components/move/useAccelerometer';
 
 export default function HomeScreen({}) {
+  
   const { x, y, z, magnitude} = useAccelerometer();
   const [message, setMessage] = useState<string>("en attente");
   const [showCatch, setShowCatch] = useState<boolean>(false);
@@ -16,6 +19,7 @@ export default function HomeScreen({}) {
   const [tickSpeed, SetTickSpeed] = useState(3000);
   const [score, setScore] = useState(0);
   const [timer, setTimer] = useState(0);
+  const [caughtFish, setCaughtFish] = useState<any>(null);
 
   const timerToTime = (timer: number) => {
     const mins = Math.floor(timer/60);
@@ -63,9 +67,10 @@ export default function HomeScreen({}) {
 
   const handleCatchResult = (result: 'success' | 'fail') => {
     setShowCatch(false);
-    isWaiting.current = false;
-
     if (result === 'success') {
+      const listePoisson = fishesData.poissons;
+      const poissonAleatoire = listePoisson[Math.floor(Math.random() * listePoisson.length)]
+      setCaughtFish(poissonAleatoire);
       setMessage('Poisson attrapé !');
     } else {
       setMessage('Raté... retour à l\'attente');
@@ -103,6 +108,15 @@ export default function HomeScreen({}) {
           startRadius={130}
           tolerance={14}
           onResult={handleCatchResult}
+        />
+      )}
+      {caughtFish &&(
+        <FishOverlay 
+          fish={caughtFish}
+          onClose={() => {
+            setCaughtFish(null);
+            isWaiting.current = false;
+          }} 
         />
       )}
     </>
