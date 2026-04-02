@@ -3,42 +3,47 @@
     {
       "nom": "Bar argenté",
       "taille": 42,
-      "valeur_nutritive": 25,
+      "valeur_nutritive": 2,
       "rarete": "commun",
       "effet": "Restaure légèrement l'énergie",
-      "description": "XXX"
+      "description": "XXX",
+      "scoreFish": 10050
     },
     {
       "nom": "Saumon écarlate",
       "taille": 68,
-      "valeur_nutritive": 50,
+      "valeur_nutritive": 5,
       "rarete": "rare",
       "effet": "XXX",
-      "description": "XXX"
+      "description": "XXX",
+      "scoreFish": 10075
     },
     {
       "nom": "Poisson-lune spectral",
       "taille": 120,
-      "valeur_nutritive": 70,
+      "valeur_nutritive": 7,
       "rarete": "mystique",
       "effet": "XXX",
-      "description": "XXX"
+      "description": "XXX",
+      "scoreFish": 100125
     },
     {
       "nom": "Anguille foudroyante",
       "taille": 95,
-      "valeur_nutritive": 85,
+      "valeur_nutritive": 10,
       "rarete": "légendaire",
       "effet": "XXX",
-      "description": "XXX"
+      "description": "XXX",
+      "scoreFish": 100200
     },
     {
       "nom": "Carpe Tarpin Stylée",
       "taille": 150,
-      "valeur_nutritive": 100,
+      "valeur_nutritive": 15,
       "rarete": "martin nevot",
       "effet": "Confère un bonus de chance de pêcher un objet dans les x prochaines secondes.",
-      "description": "XXX"
+      "description": "XXX",
+      "scoreFish": 100500
     }
   ]
 }

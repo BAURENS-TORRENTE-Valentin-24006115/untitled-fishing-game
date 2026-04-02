@@ -1,5 +1,6 @@
 import FishOverlay from '@/components/catching/fish_overlay';
 import FishingCatch from '@/components/catching/fishing_catch';
+import GameManager from '@/components/gameManager/GameManager';
 import { HungerBar } from '@/components/hunger-bar';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -20,6 +21,7 @@ export default function HomeScreen({}) {
   const [score, setScore] = useState(0);
   const [timer, setTimer] = useState(0);
   const [caughtFish, setCaughtFish] = useState<any>(null);
+  const [isGameOver, setIsGameOver] = useState(false);
 
   const timerToTime = (timer: number) => {
     const mins = Math.floor(timer/60);
@@ -29,41 +31,61 @@ export default function HomeScreen({}) {
 
   // Gestion du mouvement
   useEffect(() => {
+    if(isGameOver) {
+      return;
+    }
     if (magnitude >= 4 && !isWaiting.current && !showCatch) {
       isWaiting.current = true;
       setMessage('la ligne est lancée');
       setShowCatch(true);
     }
-  }, [magnitude]);
+  }, [magnitude, isGameOver]);
         
         
   // Pour la faim et la vitesse de tick
   useEffect(() => {
+    if (isGameOver) {
+      return;
+    }
     const interval = setInterval(() => {
-      setHunger(prev => prev <= 0 ? 20 : prev - 1);
+      setHunger(prev =>{
+        const nextHunger = prev - 1;
+        if(nextHunger <= 0){
+          setIsGameOver(true);
+          return 0;
+        }
+        return nextHunger;
+      });
+
       SetTickSpeed(prev => prev <= 750 ? 750 : prev - 75);
     }, tickSpeed);
 
     return () => clearInterval(interval);
-  }, [tickSpeed]);
+  }, [tickSpeed, isGameOver]);
 
   // Pour le score
   useEffect(() => {
+    if (isGameOver) {
+      return;
+    }
     const interval = setInterval(() => {
       setScore(prev => prev + 10);
     }, 100);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [isGameOver]);
 
   // Pour le timer
   useEffect(() => {
+    if (isGameOver) {
+      return;
+    }
     const interval = setInterval(() => {
       setTimer(prev => prev + 1);
     }, 1000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [isGameOver]);
 
   const handleCatchResult = (result: 'success' | 'fail') => {
     setShowCatch(false);
@@ -74,8 +96,19 @@ export default function HomeScreen({}) {
       setMessage('Poisson attrapé !');
     } else {
       setMessage('Raté... retour à l\'attente');
+      isWaiting.current = false;
     }
   };
+
+  const resetGame = () => {
+    setHunger(20);
+    setScore(0);
+    setTimer(0);
+    setIsGameOver(false);
+    SetTickSpeed(3000);
+    isWaiting.current = false;
+    setMessage("en attente");
+  }
 
   return (
     <>
@@ -114,9 +147,18 @@ export default function HomeScreen({}) {
         <FishOverlay 
           fish={caughtFish}
           onClose={() => {
+            setScore(prev => prev + caughtFish.scoreFish)
+            setHunger(prev => Math.min(prev + caughtFish.valeur_nutritive, 20));
             setCaughtFish(null);
             isWaiting.current = false;
           }} 
+        />
+      )}
+      {isGameOver && (
+        <GameManager
+          score={score}
+          timer={timerToTime(timer)}
+          onRestart={resetGame}
         />
       )}
     </>
