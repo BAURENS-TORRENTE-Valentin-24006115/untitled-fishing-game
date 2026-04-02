@@ -24,7 +24,7 @@ export const HungerBar = ({ hunger }: HungerBarProps) => {
                 <Image
                     key={`full-${i}`}
                     source={require('@/assets/images/UI/hunger-full.png')}
-                    style={[styles.hungerElement, { width: elementSize, height: elementSize }]}
+                    style={[{ width: elementSize, height: elementSize }]}
                 />
             ))}
 
@@ -32,7 +32,7 @@ export const HungerBar = ({ hunger }: HungerBarProps) => {
             {hasHalf && (
                 <Image
                     source={require('@/assets/images/UI/hunger-half.png')}
-                    style={[styles.hungerElement, { width: elementSize, height: elementSize }]}
+                    style={[{ width: elementSize, height: elementSize }]}
                 />
             )}
 
@@ -41,7 +41,7 @@ export const HungerBar = ({ hunger }: HungerBarProps) => {
                 <Image
                     key={`empty-${i}`}
                     source={require('@/assets/images/UI/hunger-empty.png')}
-                    style={[styles.hungerElement, { width: elementSize, height: elementSize }]}
+                    style={[{ width: elementSize, height: elementSize }]}
                 />
             ))}
         </View>

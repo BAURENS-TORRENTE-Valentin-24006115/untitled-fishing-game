@@ -17,7 +17,7 @@ export default function HomeScreen({}) {
   const [score, setScore] = useState(0);
   const [timer, setTimer] = useState(0);
 
-  const timerToTime = (timer) => {
+  const timerToTime = (timer: number) => {
     const mins = Math.floor(timer/60);
     const secs = timer % 60;
     return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
