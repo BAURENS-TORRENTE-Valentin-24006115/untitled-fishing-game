@@ -1,0 +1,44 @@
+{
+  "poissons": [
+    {
+      "nom": "Bar argenté",
+      "taille": 42,
+      "valeur_nutritive": 25,
+      "rarete": "commun",
+      "effet": "Restaure légèrement l'énergie",
+      "description": "XXX"
+    },
+    {
+      "nom": "Saumon écarlate",
+      "taille": 68,
+      "valeur_nutritive": 50,
+      "rarete": "rare",
+      "effet": "XXX",
+      "description": "XXX"
+    },
+    {
+      "nom": "Poisson-lune spectral",
+      "taille": 120,
+      "valeur_nutritive": 70,
+      "rarete": "mystique",
+      "effet": "XXX",
+      "description": "XXX"
+    },
+    {
+      "nom": "Anguille foudroyante",
+      "taille": 95,
+      "valeur_nutritive": 85,
+      "rarete": "légendaire",
+      "effet": "XXX",
+      "description": "XXX"
+    },
+    {
+      "nom": "Carpe Tarpin Stylée",
+      "taille": 150,
+      "valeur_nutritive": 100,
+      "rarete": "martin nevot",
+      "effet": "Confère un bonus de chance de pêcher un objet dans les x prochaines secondes.",
+      "description": "XXX"
+    }
+  ]
+}

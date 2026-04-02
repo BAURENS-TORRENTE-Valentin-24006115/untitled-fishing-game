@@ -1,4 +1,4 @@
-import { Image, View, StyleSheet, useWindowDimensions } from 'react-native';
+import { Image, StyleSheet, useWindowDimensions, View } from 'react-native';
 
 interface HungerBarProps {
     hunger: number; // 0-20
