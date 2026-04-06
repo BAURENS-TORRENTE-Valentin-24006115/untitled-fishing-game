@@ -12,8 +12,6 @@ import fishesData from '../../assets/data/json/fishes.json';
 import useAccelerometer from '../../components/move/useAccelerometer';
 import {router} from "expo-router";
 
-
-
 export default function HomeScreen({}) {
   
   const { x, y, z, magnitude} = useAccelerometer();
@@ -30,6 +28,13 @@ export default function HomeScreen({}) {
 
   const buttonPause = () => setIsPause(true)
 
+  const fish_rod_paths = [
+    require('@/assets/fishing_rod/canne_a_peche_sized.png'),
+    require('@/assets/fishing_rod/canne_a_peche_chargement_sized.png'),
+    require('@/assets/fishing_rod/canne_a_peche_lancer_sized.png')
+  ];
+  const [fishRodId, setFishRodId] = useState(0);
+
   const timerToTime = (timer: number) => {
     const mins = Math.floor(timer/60);
     const secs = timer % 60;
@@ -44,7 +49,12 @@ export default function HomeScreen({}) {
     if (magnitude >= 4 && !isWaiting.current && !showCatch) {
       isWaiting.current = true;
       setMessage('la ligne est lancée');
-      setShowCatch(true);
+      setFishRodId(1);
+      setTimeout(() => {
+        setMessage('en attente');
+        setFishRodId(2);
+        setShowCatch(true);
+      }, 500);
     }
   }, [magnitude, isGameOver, isPause]);
         
@@ -125,6 +135,12 @@ export default function HomeScreen({}) {
         source={require('@/assets/background/main_background-sized.png')}
         contentFit="cover"
       />
+      
+      <Image
+          style={styles.fishingRodImage}
+          source={fish_rod_paths[fishRodId]}
+          contentFit="cover"
+      />
 
       <View style={styles.page}>
         <ThemedView style={styles.titleContainer} />
@@ -192,6 +208,11 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     width: '100%',
     height: '100%',
+  },
+  fishingRodImage: {
+      ...StyleSheet.absoluteFillObject,
+      width: '100%',
+      height: '100%',
   },
   page: {
     flex: 1,
