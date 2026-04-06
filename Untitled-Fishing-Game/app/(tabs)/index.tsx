@@ -111,9 +111,11 @@ export default function HomeScreen({}) {
       const poissonAleatoire = listePoisson[Math.floor(Math.random() * listePoisson.length)]
       setCaughtFish(poissonAleatoire);
       setMessage('Poisson attrapé !');
+      setFishRodId(0);
     } else {
       setMessage('Raté... retour à l\'attente');
       isWaiting.current = false;
+      setFishRodId(0);
     }
   };
 
