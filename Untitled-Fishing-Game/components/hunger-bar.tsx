@@ -9,13 +9,15 @@ export const HungerBar = ({ hunger }: HungerBarProps) => {
     const POINTS_PER_FULL = 2;
     const { width } = useWindowDimensions();
 
+    const safeHunger = Math.max(0, Math.min(hunger, 20));
+
     // Calculer la taille dynamique des éléments pour qu'ils s'adaptent à la largeur
     const elementSize = (width / MAX_ELEMENTS) - 2; // -2 pour le padding
 
     // Calculer les éléments
-    const fullElements = Math.floor(hunger / POINTS_PER_FULL);
-    const hasHalf = (hunger % POINTS_PER_FULL) === 1;
-    const emptyElements = MAX_ELEMENTS - fullElements - (hasHalf ? 1 : 0);
+    const fullElements = Math.floor(safeHunger / POINTS_PER_FULL);
+    const hasHalf = (safeHunger % POINTS_PER_FULL) === 1;
+    const emptyElements = Math.max(0, MAX_ELEMENTS - fullElements - (hasHalf ? 1 : 0));
 
     return (
         <View style={styles.barContainer}>
@@ -60,5 +62,8 @@ const styles = StyleSheet.create({
         justifyContent: 'space-evenly',
         backgroundColor: 'rgba(0, 0, 0, 0.1)',
         paddingVertical: 8,
+    },
+    hungerElement: {
+        resizeMode: 'contain',
     }
 });

@@ -5,8 +5,6 @@ import { RARITY_COLORS } from '../../assets/data/constants/fishes';
 import { styles } from '../../assets/styles/fishesOverlayStyles';
 const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('window');
 
-
-
 interface FishOverlayProps {
      fish: any;
      onClose: () => void;
