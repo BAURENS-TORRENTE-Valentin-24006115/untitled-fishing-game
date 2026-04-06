@@ -1,14 +1,18 @@
 import FishOverlay from '@/components/catching/fish_overlay';
 import FishingCatch from '@/components/catching/fishing_catch';
 import GameManager from '@/components/gameManager/GameManager';
+import PauseMenu from "@/components/PauseMenu/PauseMenu";
 import { HungerBar } from '@/components/hunger-bar';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Image } from 'expo-image';
 import { useEffect, useRef, useState } from "react";
-import { StyleSheet, View } from 'react-native';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import fishesData from '../../assets/data/json/fishes.json';
 import useAccelerometer from '../../components/move/useAccelerometer';
+import {router} from "expo-router";
+
+
 
 export default function HomeScreen({}) {
   
@@ -22,6 +26,9 @@ export default function HomeScreen({}) {
   const [timer, setTimer] = useState(0);
   const [caughtFish, setCaughtFish] = useState<any>(null);
   const [isGameOver, setIsGameOver] = useState(false);
+  const [isPause, setIsPause] = useState(false);
+
+  const buttonPause = () => setIsPause(true)
 
   const timerToTime = (timer: number) => {
     const mins = Math.floor(timer/60);
@@ -31,7 +38,7 @@ export default function HomeScreen({}) {
 
   // Gestion du mouvement
   useEffect(() => {
-    if(isGameOver) {
+    if(isGameOver || isPause) {
       return;
     }
     if (magnitude >= 4 && !isWaiting.current && !showCatch) {
@@ -39,12 +46,12 @@ export default function HomeScreen({}) {
       setMessage('la ligne est lancée');
       setShowCatch(true);
     }
-  }, [magnitude, isGameOver]);
+  }, [magnitude, isGameOver, isPause]);
         
         
   // Pour la faim et la vitesse de tick
   useEffect(() => {
-    if (isGameOver) {
+    if (isGameOver || isPause) {
       return;
     }
     const interval = setInterval(() => {
@@ -61,11 +68,11 @@ export default function HomeScreen({}) {
     }, tickSpeed);
 
     return () => clearInterval(interval);
-  }, [tickSpeed, isGameOver]);
+  }, [tickSpeed, isGameOver, isPause]);
 
   // Pour le score
   useEffect(() => {
-    if (isGameOver) {
+    if (isGameOver || isPause) {
       return;
     }
     const interval = setInterval(() => {
@@ -73,11 +80,11 @@ export default function HomeScreen({}) {
     }, 100);
 
     return () => clearInterval(interval);
-  }, [isGameOver]);
+  }, [isGameOver, isPause]);
 
   // Pour le timer
   useEffect(() => {
-    if (isGameOver) {
+    if (isGameOver || isPause) {
       return;
     }
     const interval = setInterval(() => {
@@ -85,7 +92,7 @@ export default function HomeScreen({}) {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [isGameOver]);
+  }, [isGameOver, isPause]);
 
   const handleCatchResult = (result: 'success' | 'fail') => {
     setShowCatch(false);
@@ -105,6 +112,7 @@ export default function HomeScreen({}) {
     setScore(0);
     setTimer(0);
     setIsGameOver(false);
+    setIsPause(false);
     SetTickSpeed(3000);
     isWaiting.current = false;
     setMessage("en attente");
@@ -129,6 +137,16 @@ export default function HomeScreen({}) {
           <ThemedText>Tick Speed : {tickSpeed}</ThemedText>
           <ThemedText>Score : {score}</ThemedText>
           <ThemedText>Timer : {timerToTime(timer)}</ThemedText>
+        </View>
+
+        <View>
+          <TouchableOpacity style={styles.pauseButton} onPress={buttonPause}>
+            <Image
+                style={styles.pauseIcon}
+                source={require('@/assets/bouton/pause.png')}
+                contentFit="contain"
+            />
+          </TouchableOpacity>
         </View>
         
         <HungerBar hunger={hunger} />
@@ -160,6 +178,10 @@ export default function HomeScreen({}) {
           timer={timerToTime(timer)}
           onRestart={resetGame}
         />
+      )}
+      {isPause && (
+          <PauseMenu
+              onResume={() => setIsPause(false)} />
       )}
     </>
   );
@@ -193,5 +215,19 @@ const styles = StyleSheet.create({
   tinyLogo: {
     width: 430,
     height: 750,
+  },
+  pauseButton: {
+    position: 'absolute',
+    top: -150,
+    right: 20,
+    zIndex: 100,
+    width: 44,
+    height: 44,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  pauseIcon: {
+    width: 28,
+    height: 28,
   },
 });
