@@ -16,7 +16,7 @@ export default function useAccelerometer() {
     const NewMagnitude = Math.sqrt(x**2 + y**2 + z**2);
     setMagnitude(NewMagnitude)
     if (NewMagnitude >= 3){
-      vibrateDevice();
+      vibrateDevice([50, 150]);
     }
     }, [x,y,z]);
 

@@ -8,13 +8,13 @@ import { ThemedView } from '@/components/themed-view';
 import { Image } from 'expo-image';
 import { useEffect, useRef, useState } from "react";
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
-import fishesData from '../../assets/data/json/fishes.json';
+import {selectRandomFishWithRarity} from '../../components/catching/fish_catching_logic';
 import useAccelerometer from '../../components/move/useAccelerometer';
+import {vibrateDevice} from "@/components/vibration/vibration";
 
-export default function HomeScreen({}) {
+export default function HomeScreen() {
   
-  const { x, y, z, magnitude} = useAccelerometer();
-  const [message, setMessage] = useState<string>("en attente");
+  const magnitude = useAccelerometer()["magnitude"];
   const [showCatch, setShowCatch] = useState<boolean>(false);
   const isWaiting = useRef<boolean>(false);
   const waitingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -53,18 +53,17 @@ export default function HomeScreen({}) {
     if(isGameOver || isPause) {
       return;
     }
-    if (magnitude >= 4 && !isWaiting.current && !showCatch) {
+    if (magnitude >= 3 && !isWaiting.current && !showCatch) {
       isWaiting.current = true;
-      setMessage('la ligne est lancée');
       setFishRodId(1);
 
-      const randomDelay = Math.floor(Math.random() * 3000) + 1000;
+      const randomDelay = Math.floor(Math.random() * 1500) + 500;
       clearWaitingTimer();
       waitingTimeoutRef.current = setTimeout(() => {
-        setMessage('un poisson mord !');
         setFishRodId(2);
         setShowCatch(true);
         waitingTimeoutRef.current = null;
+        vibrateDevice([100, 75]);
       }, randomDelay);
     }
   }, [magnitude, isGameOver, isPause, showCatch]);
@@ -97,7 +96,7 @@ export default function HomeScreen({}) {
         return nextHunger;
       });
 
-      SetTickSpeed(prev => prev <= 750 ? 750 : prev - 75);
+      SetTickSpeed(prev => prev <= 900 ? 900 : prev - 75);
     }, tickSpeed);
 
     return () => clearInterval(interval);
@@ -130,13 +129,9 @@ export default function HomeScreen({}) {
   const handleCatchResult = (result: 'success' | 'fail') => {
     setShowCatch(false);
     if (result === 'success') {
-      const listePoisson = fishesData.poissons;
-      const poissonAleatoire = listePoisson[Math.floor(Math.random() * listePoisson.length)]
-      setCaughtFish(poissonAleatoire);
-      setMessage('Poisson attrape !');
+      setCaughtFish(selectRandomFishWithRarity());
       setFishRodId(0);
     } else {
-      setMessage('Rate... retour a l\'attente');
       isWaiting.current = false;
       setFishRodId(0);
     }
@@ -154,7 +149,6 @@ export default function HomeScreen({}) {
     SetTickSpeed(3000);
     setFishRodId(0);
     isWaiting.current = false;
-    setMessage("en attente");
   }
 
   return (
@@ -173,15 +167,9 @@ export default function HomeScreen({}) {
 
       <View style={styles.page}>
         <ThemedView style={styles.titleContainer} />
-        <View>
-          <ThemedText>X : {x}</ThemedText>
-          <ThemedText>Y : {y}</ThemedText>
-          <ThemedText>Z : {z}</ThemedText>
-          <ThemedText>{message}</ThemedText>
-          <ThemedText>Hunger : {hunger}</ThemedText>
-          <ThemedText>Tick Speed : {tickSpeed}</ThemedText>
-          <ThemedText>Score : {score}</ThemedText>
-          <ThemedText>Timer : {timerToTime(timer)}</ThemedText>
+        <View style={styles.statsContainer}>
+          <ThemedText style={styles.stats}>Score : {score}</ThemedText>
+          <ThemedText style={styles.stats}>Timer : {timerToTime(timer)}</ThemedText>
         </View>
 
         <View>
@@ -199,7 +187,7 @@ export default function HomeScreen({}) {
 
       {showCatch && (
         <FishingCatch
-          duration={Math.random() * 1500 + 750}
+          duration={Math.random() * 1250 + 750}
           targetRadius={40}
           startRadius={Math.random() * 40 + 90}
           tolerance={14}
@@ -268,7 +256,7 @@ const styles = StyleSheet.create({
   },
   pauseButton: {
     position: 'absolute',
-    top: -150,
+    top: -45,
     right: 20,
     zIndex: 100,
     width: 44,
@@ -280,4 +268,17 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
   },
+  stats: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    letterSpacing: 2,
+    fontFamily: 'monospace',
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 3,
+  },
+  statsContainer: {
+    marginTop: 50,
+    paddingHorizontal: 20,
+  }
 });
