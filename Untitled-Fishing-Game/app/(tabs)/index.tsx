@@ -74,7 +74,7 @@ export default function HomeScreen({}) {
         return nextHunger;
       });
 
-      SetTickSpeed(prev => prev <= 750 ? 750 : prev - 75);
+      SetTickSpeed(prev => prev <= 500 ? 500 : prev - 75);
     }, tickSpeed);
 
     return () => clearInterval(interval);
@@ -172,9 +172,9 @@ export default function HomeScreen({}) {
 
       {showCatch && (
         <FishingCatch
-          duration={2500}
+          duration={Math.random() * 1500 + 750}
           targetRadius={40}
-          startRadius={130}
+          startRadius={Math.random() * 40 + 90}
           tolerance={14}
           onResult={handleCatchResult}
         />
