@@ -10,7 +10,6 @@ import { useEffect, useRef, useState } from "react";
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import fishesData from '../../assets/data/json/fishes.json';
 import useAccelerometer from '../../components/move/useAccelerometer';
-import {router} from "expo-router";
 
 export default function HomeScreen({}) {
   
@@ -18,6 +17,7 @@ export default function HomeScreen({}) {
   const [message, setMessage] = useState<string>("en attente");
   const [showCatch, setShowCatch] = useState<boolean>(false);
   const isWaiting = useRef<boolean>(false);
+  const waitingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [hunger, setHunger] = useState(20);
   const [tickSpeed, SetTickSpeed] = useState(3000);
   const [score, setScore] = useState(0);
@@ -25,6 +25,13 @@ export default function HomeScreen({}) {
   const [caughtFish, setCaughtFish] = useState<any>(null);
   const [isGameOver, setIsGameOver] = useState(false);
   const [isPause, setIsPause] = useState(false);
+
+  const clearWaitingTimer = () => {
+    if (waitingTimeoutRef.current) {
+      clearTimeout(waitingTimeoutRef.current);
+      waitingTimeoutRef.current = null;
+    }
+  };
 
   const buttonPause = () => setIsPause(true)
 
@@ -50,14 +57,30 @@ export default function HomeScreen({}) {
       isWaiting.current = true;
       setMessage('la ligne est lancée');
       setFishRodId(1);
-      setTimeout(() => {
-        setMessage('en attente');
+
+      const randomDelay = Math.floor(Math.random() * 3000) + 1000;
+      clearWaitingTimer();
+      waitingTimeoutRef.current = setTimeout(() => {
+        setMessage('un poisson mord !');
         setFishRodId(2);
         setShowCatch(true);
-      }, 500);
+        waitingTimeoutRef.current = null;
+      }, randomDelay);
     }
-  }, [magnitude, isGameOver, isPause]);
-        
+  }, [magnitude, isGameOver, isPause, showCatch]);
+
+  // Nettoie le timer de peche si la partie est arretee/mise en pause
+  useEffect(() => {
+    if (isGameOver || isPause) {
+      clearWaitingTimer();
+    }
+  }, [isGameOver, isPause]);
+
+  // Cleanup global au demontage
+  useEffect(() => {
+    return () => clearWaitingTimer();
+  }, []);
+
         
   // Pour la faim et la vitesse de tick
   useEffect(() => {
@@ -74,7 +97,7 @@ export default function HomeScreen({}) {
         return nextHunger;
       });
 
-      SetTickSpeed(prev => prev <= 500 ? 500 : prev - 75);
+      SetTickSpeed(prev => prev <= 750 ? 750 : prev - 75);
     }, tickSpeed);
 
     return () => clearInterval(interval);
@@ -110,22 +133,26 @@ export default function HomeScreen({}) {
       const listePoisson = fishesData.poissons;
       const poissonAleatoire = listePoisson[Math.floor(Math.random() * listePoisson.length)]
       setCaughtFish(poissonAleatoire);
-      setMessage('Poisson attrapé !');
+      setMessage('Poisson attrape !');
       setFishRodId(0);
     } else {
-      setMessage('Raté... retour à l\'attente');
+      setMessage('Rate... retour a l\'attente');
       isWaiting.current = false;
       setFishRodId(0);
     }
   };
 
   const resetGame = () => {
+    clearWaitingTimer();
+    setShowCatch(false);
+    setCaughtFish(null);
     setHunger(20);
     setScore(0);
     setTimer(0);
     setIsGameOver(false);
     setIsPause(false);
     SetTickSpeed(3000);
+    setFishRodId(0);
     isWaiting.current = false;
     setMessage("en attente");
   }
