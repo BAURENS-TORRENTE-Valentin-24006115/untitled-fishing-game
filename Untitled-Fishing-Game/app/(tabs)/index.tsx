@@ -57,14 +57,13 @@ export default function HomeScreen() {
       isWaiting.current = true;
       setFishRodId(1);
 
-      const randomDelay = Math.floor(Math.random() * 1500) + 500;
       clearWaitingTimer();
       waitingTimeoutRef.current = setTimeout(() => {
         setFishRodId(2);
         setShowCatch(true);
         waitingTimeoutRef.current = null;
         vibrateDevice([100, 75]);
-      }, randomDelay);
+      }, 500);
     }
   }, [magnitude, isGameOver, isPause, showCatch]);
 
