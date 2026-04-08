@@ -38,7 +38,8 @@ export default function HomeScreen() {
   const fish_rod_paths = [
     require('@/assets/fishing_rod/canne_a_peche_sized.png'),
     require('@/assets/fishing_rod/canne_a_peche_chargement_sized.png'),
-    require('@/assets/fishing_rod/canne_a_peche_lancer_sized.png')
+    require('@/assets/fishing_rod/canne_a_peche_lancer_sized.png'),
+    require('@/assets/fishing_rod/canne_a_peche_vide_sized.png')
   ];
   const [fishRodId, setFishRodId] = useState(0);
 
@@ -129,7 +130,7 @@ export default function HomeScreen() {
     setShowCatch(false);
     if (result === 'success') {
       setCaughtFish(selectRandomFishWithRarity());
-      setFishRodId(0);
+      setFishRodId(3);
     } else {
       isWaiting.current = false;
       setFishRodId(0);
@@ -200,6 +201,7 @@ export default function HomeScreen() {
             setScore(prev => prev + caughtFish.scoreFish)
             setHunger(prev => Math.min(prev + caughtFish.valeur_nutritive, 20));
             setCaughtFish(null);
+            setFishRodId(0);
             isWaiting.current = false;
           }} 
         />
@@ -271,6 +273,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     letterSpacing: 2,
+    zIndex: 100,
     fontFamily: 'monospace',
     textShadowColor: 'rgba(0, 0, 0, 0.75)',
     textShadowOffset: { width: 2, height: 2 },

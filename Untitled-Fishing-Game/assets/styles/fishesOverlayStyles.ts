@@ -27,7 +27,7 @@ export const styles = StyleSheet.create({
         backgroundColor: 'rgba(0, 0, 0, 0.40)',
         justifyContent: 'center',
         alignItems: 'center',
-        zIndex: 9999,
+        zIndex: 10,
     },
     card: {
         width: SCREEN_W * 0.85,
