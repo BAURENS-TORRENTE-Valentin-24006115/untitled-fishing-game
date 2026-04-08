@@ -33,7 +33,7 @@ export default function FishOverlay({ fish, onClose }: FishOverlayProps) {
                <ThemedText>{fish.description}</ThemedText>
           </View>
           <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-               <ThemedText style={{ color: '#000', fontWeight: 'bold' }} >RAMASSER</ThemedText>
+               <ThemedText style={{ color: '#000', fontWeight: 'bold' }} >Manger</ThemedText>
           </TouchableOpacity>
           </View>
      </View>

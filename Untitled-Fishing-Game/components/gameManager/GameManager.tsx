@@ -1,7 +1,6 @@
-import React from 'react'; 
-import { useState } from 'react';
 import { ThemedText } from '@/components/themed-text';
-import { View, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import React from 'react';
+import { Dimensions, StyleSheet, TouchableOpacity, View } from 'react-native';
 const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('window');
 
 interface gameManagerProps{
@@ -32,10 +31,10 @@ export default function GameManager({score, timer, onRestart}: gameManagerProps)
 const styles = StyleSheet.create({
     container: {
         ...StyleSheet.absoluteFillObject,
-        backgroundColor: 'rgba(0, 0, 0, 0.9)', // Fond très sombre
+        backgroundColor: 'rgba(0, 0, 0, 0.9)',
         justifyContent: 'center',
         alignItems: 'center',
-        zIndex: 10000, // Tout devant
+        zIndex: 10000,
     },
     card: {
         width: SCREEN_W * 0.8,
@@ -43,7 +42,7 @@ const styles = StyleSheet.create({
         padding: 30,
         borderRadius: 20,
         borderWidth: 2,
-        borderColor: '#ff4444', // Rouge pour la défaite
+        borderColor: '#ff4444', 
         alignItems: 'center',
     },
     gameOverTitle: {
