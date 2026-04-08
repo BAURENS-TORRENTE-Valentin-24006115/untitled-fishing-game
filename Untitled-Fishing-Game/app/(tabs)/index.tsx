@@ -8,8 +8,8 @@ import { ThemedView } from '@/components/themed-view';
 import { Image } from 'expo-image';
 import { useEffect, useRef, useState } from "react";
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
-import {selectRandomFishWithRarity} from '../../components/catching/fish_catching_logic';
-import useAccelerometer from '../../components/move/useAccelerometer';
+import {selectRandomFishWithRarity} from '@/components/catching/fish_catching_logic';
+import useAccelerometer from '@/components/move/useAccelerometer';
 import {vibrateDevice} from "@/components/vibration/vibration";
 
 export default function HomeScreen() {

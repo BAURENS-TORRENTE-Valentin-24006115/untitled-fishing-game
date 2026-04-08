@@ -53,7 +53,7 @@ export const HungerBar = ({ hunger }: HungerBarProps) => {
 const styles = StyleSheet.create({
     barContainer: {
         position: 'absolute',
-        bottom: 0,
+        bottom: 35,
         left: 0,
         right: 0,
         width: '100%',
