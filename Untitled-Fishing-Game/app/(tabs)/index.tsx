@@ -12,6 +12,7 @@ import { Audio } from 'expo-av';
 import { Image } from 'expo-image';
 import { useEffect, useRef, useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import StartScreen from "@/components/StartScreen";
 
 export default function HomeScreen() {
   const magnitude = useAccelerometer()["magnitude"];
@@ -27,6 +28,7 @@ export default function HomeScreen() {
   const [isPause, setIsPause] = useState(false);
   const [sound, setSound] = useState<Audio.Sound | null>(null);
   const [isBestScore, setisBestScore] = useState(0);
+  const [showStartScreen, setShowStartScreen] = useState(true);
 
   async function playBackgroundSound() {
     const { sound: newSound } = await Audio.Sound.createAsync(
@@ -285,6 +287,11 @@ export default function HomeScreen() {
       {isPause && (
           <PauseMenu
               onResume={() => setIsPause(false)} />
+      )}
+      {showStartScreen && (
+        <StartScreen
+          onStartGame={() => setShowStartScreen(false)}
+        />
       )}
     </>
   );
