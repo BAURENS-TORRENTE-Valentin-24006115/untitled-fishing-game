@@ -1,19 +1,19 @@
 import FishOverlay from '@/components/catching/fish_overlay';
 import FishingCatch from '@/components/catching/fishing_catch';
 import GameManager from '@/components/gameManager/GameManager';
-import PauseMenu from "@/components/PauseMenu/PauseMenu";
 import { HungerBar } from '@/components/hunger-bar';
+import PauseMenu from "@/components/PauseMenu/PauseMenu";
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { vibrateDevice } from "@/components/vibration/vibration";
+import { Audio } from 'expo-av';
 import { Image } from 'expo-image';
 import { useEffect, useRef, useState } from "react";
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
-import {selectRandomFishWithRarity} from '../../components/catching/fish_catching_logic';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { selectRandomFishWithRarity } from '../../components/catching/fish_catching_logic';
 import useAccelerometer from '../../components/move/useAccelerometer';
-import {vibrateDevice} from "@/components/vibration/vibration";
 
 export default function HomeScreen() {
-  
   const magnitude = useAccelerometer()["magnitude"];
   const [showCatch, setShowCatch] = useState<boolean>(false);
   const isWaiting = useRef<boolean>(false);
@@ -25,6 +25,58 @@ export default function HomeScreen() {
   const [caughtFish, setCaughtFish] = useState<any>(null);
   const [isGameOver, setIsGameOver] = useState(false);
   const [isPause, setIsPause] = useState(false);
+  const [sound, setSound] = useState<Audio.Sound | null>(null);
+
+  async function playBackgroundSound() {
+    const { sound: newSound } = await Audio.Sound.createAsync(
+      require('@/assets/Sounds/ambianceSound.mp3'),
+      {
+        shouldPlay: true,
+        isLooping: true,
+        volume: 0.2,
+      }
+    );
+    setSound(newSound);
+  }
+
+  useEffect(() => {
+    playBackgroundSound();
+  }, []);
+
+  const playSwooshSound = async () => {
+    await Audio.Sound.createAsync(
+      require('@/assets/Sounds/FishingRod.mp3'),
+        { shouldPlay: true }
+    );
+  };
+
+  const playCaughtFish = async () => {
+    await Audio.Sound.createAsync(
+      require('@/assets/Sounds/catchFish.mp3'),
+        { shouldPlay: true,
+          volume: 0.2,
+        }
+    );
+  };
+
+  const playEatFish = async () => {
+    await Audio.Sound.createAsync(
+      require('@/assets/Sounds/eatingSound.mp3'),
+      {
+        shouldPlay: true,
+        volume: 0.2,
+      }
+    );
+  };
+
+  useEffect(() => {
+    if (!sound) return;
+    if (isPause || isGameOver) {
+      sound.pauseAsync();
+    } else {
+      sound.playAsync();
+    }
+  }, [isPause, isGameOver, sound]);
 
   const clearWaitingTimer = () => {
     if (waitingTimeoutRef.current) {
@@ -55,8 +107,8 @@ export default function HomeScreen() {
     }
     if (magnitude >= 2.5 && !isWaiting.current && !showCatch) {
       isWaiting.current = true;
+      playSwooshSound();
       setFishRodId(1);
-
       clearWaitingTimer();
       waitingTimeoutRef.current = setTimeout(() => {
         setFishRodId(2);
@@ -128,6 +180,7 @@ export default function HomeScreen() {
   const handleCatchResult = (result: 'success' | 'fail') => {
     setShowCatch(false);
     if (result === 'success') {
+      playCaughtFish();
       setCaughtFish(selectRandomFishWithRarity());
       setFishRodId(0);
     } else {
@@ -197,6 +250,7 @@ export default function HomeScreen() {
         <FishOverlay 
           fish={caughtFish}
           onClose={() => {
+            playEatFish();
             setScore(prev => prev + caughtFish.scoreFish)
             setHunger(prev => Math.min(prev + caughtFish.valeur_nutritive, 20));
             setCaughtFish(null);
