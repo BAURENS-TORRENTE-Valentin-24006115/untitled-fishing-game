@@ -53,18 +53,17 @@ export default function HomeScreen() {
     if(isGameOver || isPause) {
       return;
     }
-    if (magnitude >= 3 && !isWaiting.current && !showCatch) {
+    if (magnitude >= 2.5 && !isWaiting.current && !showCatch) {
       isWaiting.current = true;
       setFishRodId(1);
 
-      const randomDelay = Math.floor(Math.random() * 1500) + 500;
       clearWaitingTimer();
       waitingTimeoutRef.current = setTimeout(() => {
         setFishRodId(2);
         setShowCatch(true);
         waitingTimeoutRef.current = null;
         vibrateDevice([100, 75]);
-      }, randomDelay);
+      }, 500);
     }
   }, [magnitude, isGameOver, isPause, showCatch]);
 
