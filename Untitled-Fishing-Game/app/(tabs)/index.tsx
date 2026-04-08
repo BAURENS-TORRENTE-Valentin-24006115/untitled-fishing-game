@@ -46,7 +46,10 @@ export default function HomeScreen() {
   const playSwooshSound = async () => {
     await Audio.Sound.createAsync(
       require('@/assets/Sounds/FishingRod.mp3'),
-        { shouldPlay: true }
+        {
+          shouldPlay: true,
+          volume: 0.2
+        }
     );
   };
 
@@ -54,7 +57,7 @@ export default function HomeScreen() {
     await Audio.Sound.createAsync(
       require('@/assets/Sounds/catchFish.mp3'),
         { shouldPlay: true,
-          volume: 0.2,
+          volume: 0.1,
         }
     );
   };
