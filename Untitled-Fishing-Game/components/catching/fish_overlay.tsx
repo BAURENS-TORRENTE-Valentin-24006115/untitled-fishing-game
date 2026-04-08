@@ -26,19 +26,22 @@ export default function FishOverlay({ fish, onClose }: FishOverlayProps) {
      const rareteKey = fish.rarete.toLowerCase() as keyof typeof RARITY_COLORS;
      const themeColor = RARITY_COLORS[rareteKey] || '#FFFFFF';
 
-     const fish_rod_paths = [
-       require('@/assets/fishing_rod/canne_a_peche_sized.png'),
-       require('@/assets/fishing_rod/canne_a_peche_chargement_sized.png'),
-       require('@/assets/fishing_rod/canne_a_peche_lancer_sized.png')
-     ];
-     const fishRodId = 0;
      const fishImageSource = fishImageMap[fish.image];
 
      return (
      <View style={styles.container}>
-          <View style={[styles.card, { borderColor: themeColor }]}>
-          
-          {/*Nom dlu poisson*/}
+          <View style={styles.overlayCard}>
+               {fishImageSource && (
+                    <Image
+                      source={fishImageSource}
+                      style={styles.fish}
+                      contentFit="contain"
+                    />
+               )}
+
+          </View>
+
+          <View style={[styles.card, { borderColor: themeColor }]}> 
           <ThemedText style={{ color: themeColor, fontSize: 24, fontWeight: 'bold' }}>
                {fish.nom}
           </ThemedText>
