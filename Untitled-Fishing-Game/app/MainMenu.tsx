@@ -16,7 +16,7 @@ export default function MainMenu() {
             />
 
             <View style={styles.page}>
-                <ThemedText style={styles.title}>Fishing is Mips</ThemedText>
+                <ThemedText style={styles.title}>Untitled Fishing Game</ThemedText>
 
                 <TouchableOpacity style={styles.buttonPlay} onPress={() => router.push('/')}>
                     <ThemedText style={styles.buttonText}>JOUER</ThemedText>
@@ -48,6 +48,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 40,
         letterSpacing: 2,
+        lineHeight: 37,
         paddingHorizontal: 20,
         padding: 10,
         textAlign: 'center',
@@ -58,7 +59,7 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         borderWidth: 2,
         borderColor: '#4CAF50',
-        backgroundColor: 'rgba(76, 175, 80, 0.15)',
+        backgroundColor: 'rgba(76, 175, 80, 0.5)',
         alignItems: 'center',
     },
     buttonQuit: {
@@ -67,7 +68,7 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         borderWidth: 2,
         borderColor: '#ff4444',
-        backgroundColor: 'rgba(255, 68, 68, 0.15)',
+        backgroundColor: 'rgba(255, 68, 68, 0.5)',
         alignItems: 'center',
     },
     buttonText: {

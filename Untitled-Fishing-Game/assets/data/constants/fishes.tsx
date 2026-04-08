@@ -1,7 +1,6 @@
 export const RARITY_COLORS = {
-  commun: '#B0C4DE',
-  rare: '#4169E1',
-  mystique: '#9370DB',
-  legendaire: '#FFD700',
-  'martin nevot': '#ff4500',
+  "commun": '#B0C4DE',
+  "rare": '#4169E1',
+  "légendaire": '#8b5cfc',
+  "exotique": '#ffa600',
 };

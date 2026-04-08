@@ -46,12 +46,10 @@ export default function FishOverlay({ fish, onClose }: FishOverlayProps) {
                <ThemedText>{fish.rarete}</ThemedText>
           </View>
           <View>
-               <ThemedText>{fish.taille} cm</ThemedText>
-               <ThemedText>+{fish.valeur_nutritive}</ThemedText>
+               <ThemedText>+{fish.valeur_nutritive} nutrition</ThemedText>
           </View>
           <View>
                <ThemedText>{fish.description}</ThemedText>
-               <ThemedText>Effet : {fish.effet}</ThemedText>
           </View>
           <TouchableOpacity style={styles.closeButton} onPress={onClose}>
                <ThemedText style={{ color: '#000', fontWeight: 'bold' }} >RAMASSER</ThemedText>

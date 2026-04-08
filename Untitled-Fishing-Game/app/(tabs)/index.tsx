@@ -8,16 +8,16 @@ import { ThemedView } from '@/components/themed-view';
 import { Image } from 'expo-image';
 import { useEffect, useRef, useState } from "react";
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
-import fishesData from '../../assets/data/json/fishes.json';
+import {selectRandomFishWithRarity} from '../../components/catching/fish_catching_logic';
 import useAccelerometer from '../../components/move/useAccelerometer';
-import {router} from "expo-router";
+import {vibrateDevice} from "@/components/vibration/vibration";
 
-export default function HomeScreen({}) {
+export default function HomeScreen() {
   
-  const { x, y, z, magnitude} = useAccelerometer();
-  const [message, setMessage] = useState<string>("en attente");
+  const magnitude = useAccelerometer()["magnitude"];
   const [showCatch, setShowCatch] = useState<boolean>(false);
   const isWaiting = useRef<boolean>(false);
+  const waitingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [hunger, setHunger] = useState(20);
   const [tickSpeed, SetTickSpeed] = useState(3000);
   const [score, setScore] = useState(0);
@@ -25,6 +25,13 @@ export default function HomeScreen({}) {
   const [caughtFish, setCaughtFish] = useState<any>(null);
   const [isGameOver, setIsGameOver] = useState(false);
   const [isPause, setIsPause] = useState(false);
+
+  const clearWaitingTimer = () => {
+    if (waitingTimeoutRef.current) {
+      clearTimeout(waitingTimeoutRef.current);
+      waitingTimeoutRef.current = null;
+    }
+  };
 
   const buttonPause = () => setIsPause(true)
 
@@ -46,18 +53,32 @@ export default function HomeScreen({}) {
     if(isGameOver || isPause) {
       return;
     }
-    if (magnitude >= 4 && !isWaiting.current && !showCatch) {
+    if (magnitude >= 2.5 && !isWaiting.current && !showCatch) {
       isWaiting.current = true;
-      setMessage('la ligne est lancée');
       setFishRodId(1);
-      setTimeout(() => {
-        setMessage('en attente');
+
+      clearWaitingTimer();
+      waitingTimeoutRef.current = setTimeout(() => {
         setFishRodId(2);
         setShowCatch(true);
+        waitingTimeoutRef.current = null;
+        vibrateDevice([100, 75]);
       }, 500);
     }
-  }, [magnitude, isGameOver, isPause]);
-        
+  }, [magnitude, isGameOver, isPause, showCatch]);
+
+  // Nettoie le timer de peche si la partie est arretee/mise en pause
+  useEffect(() => {
+    if (isGameOver || isPause) {
+      clearWaitingTimer();
+    }
+  }, [isGameOver, isPause]);
+
+  // Cleanup global au demontage
+  useEffect(() => {
+    return () => clearWaitingTimer();
+  }, []);
+
         
   // Pour la faim et la vitesse de tick
   useEffect(() => {
@@ -74,7 +95,7 @@ export default function HomeScreen({}) {
         return nextHunger;
       });
 
-      SetTickSpeed(prev => prev <= 750 ? 750 : prev - 75);
+      SetTickSpeed(prev => prev <= 900 ? 900 : prev - 75);
     }, tickSpeed);
 
     return () => clearInterval(interval);
@@ -107,27 +128,26 @@ export default function HomeScreen({}) {
   const handleCatchResult = (result: 'success' | 'fail') => {
     setShowCatch(false);
     if (result === 'success') {
-      const listePoisson = fishesData.poissons;
-      const poissonAleatoire = listePoisson[Math.floor(Math.random() * listePoisson.length)]
-      setCaughtFish(poissonAleatoire);
-      setMessage('Poisson attrapé !');
+      setCaughtFish(selectRandomFishWithRarity());
       setFishRodId(0);
     } else {
-      setMessage('Raté... retour à l\'attente');
       isWaiting.current = false;
       setFishRodId(0);
     }
   };
 
   const resetGame = () => {
+    clearWaitingTimer();
+    setShowCatch(false);
+    setCaughtFish(null);
     setHunger(20);
     setScore(0);
     setTimer(0);
     setIsGameOver(false);
     setIsPause(false);
     SetTickSpeed(3000);
+    setFishRodId(0);
     isWaiting.current = false;
-    setMessage("en attente");
   }
 
   return (
@@ -146,15 +166,9 @@ export default function HomeScreen({}) {
 
       <View style={styles.page}>
         <ThemedView style={styles.titleContainer} />
-        <View>
-          <ThemedText>X : {x}</ThemedText>
-          <ThemedText>Y : {y}</ThemedText>
-          <ThemedText>Z : {z}</ThemedText>
-          <ThemedText>{message}</ThemedText>
-          <ThemedText>Hunger : {hunger}</ThemedText>
-          <ThemedText>Tick Speed : {tickSpeed}</ThemedText>
-          <ThemedText>Score : {score}</ThemedText>
-          <ThemedText>Timer : {timerToTime(timer)}</ThemedText>
+        <View style={styles.statsContainer}>
+          <ThemedText style={styles.stats}>Score : {score}</ThemedText>
+          <ThemedText style={styles.stats}>Timer : {timerToTime(timer)}</ThemedText>
         </View>
 
         <View>
@@ -172,9 +186,9 @@ export default function HomeScreen({}) {
 
       {showCatch && (
         <FishingCatch
-          duration={2500}
+          duration={Math.random() * 1250 + 750}
           targetRadius={40}
-          startRadius={130}
+          startRadius={Math.random() * 40 + 90}
           tolerance={14}
           onResult={handleCatchResult}
         />
@@ -241,7 +255,7 @@ const styles = StyleSheet.create({
   },
   pauseButton: {
     position: 'absolute',
-    top: -150,
+    top: -45,
     right: 20,
     zIndex: 100,
     width: 44,
@@ -253,4 +267,17 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
   },
+  stats: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    letterSpacing: 2,
+    fontFamily: 'monospace',
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 3,
+  },
+  statsContainer: {
+    marginTop: 50,
+    paddingHorizontal: 20,
+  }
 });

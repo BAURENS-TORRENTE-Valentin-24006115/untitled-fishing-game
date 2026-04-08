@@ -1,5 +1,5 @@
 import {Vibration} from 'react-native';
 
-export function vibrateDevice() {
-  Vibration.vibrate(500);
+export function vibrateDevice(intensity : number|number[], ) {
+  Vibration.vibrate(intensity);
 }
