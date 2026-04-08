@@ -4,18 +4,20 @@ import { Dimensions, StyleSheet, TouchableOpacity, View } from 'react-native';
 const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('window');
 
 interface gameManagerProps{
+    bestScore: number;
     score: number;
     timer: string;
     onRestart: () => void;
 } 
 
-export default function GameManager({score, timer, onRestart}: gameManagerProps){
+export default function GameManager({bestScore, score, timer, onRestart}: gameManagerProps){
     return (
         <View style={styles.container}>
             <View style={styles.card}>
                 <ThemedText style={styles.gameOverTitle}>MORT DE FAIM !</ThemedText>
 
                 <View style={styles.statsRow}>
+                    <ThemedText>Meilleur Score : {bestScore}</ThemedText>
                     <ThemedText>Score : {score}</ThemedText>
                     <ThemedText>Temps : {timer}</ThemedText>
                 </View>

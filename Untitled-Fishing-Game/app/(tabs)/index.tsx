@@ -26,6 +26,7 @@ export default function HomeScreen() {
   const [isGameOver, setIsGameOver] = useState(false);
   const [isPause, setIsPause] = useState(false);
   const [sound, setSound] = useState<Audio.Sound | null>(null);
+  const [isBestScore, setisBestScore] = useState(0);
 
   async function playBackgroundSound() {
     const { sound: newSound } = await Audio.Sound.createAsync(
@@ -181,6 +182,15 @@ export default function HomeScreen() {
     return () => clearInterval(interval);
   }, [isGameOver, isPause]);
 
+  //vérifie le meilleur score :
+  useEffect(()=>{
+    if (isBestScore < score){
+      setisBestScore(score);
+    }else {
+      setisBestScore(isBestScore);
+    }
+  })
+
   const handleCatchResult = (result: 'success' | 'fail') => {
     setShowCatch(false);
     if (result === 'success') {
@@ -204,6 +214,7 @@ export default function HomeScreen() {
     setIsPause(false);
     SetTickSpeed(3000);
     setFishRodId(0);
+    setisBestScore(isBestScore);
     isWaiting.current = false;
   }
 
@@ -265,9 +276,10 @@ export default function HomeScreen() {
       )}
       {isGameOver && (
         <GameManager
-          score={score}
-          timer={timerToTime(timer)}
-          onRestart={resetGame}
+            bestScore={isBestScore}
+            score={score}
+            timer={timerToTime(timer)}
+            onRestart={resetGame}
         />
       )}
       {isPause && (
