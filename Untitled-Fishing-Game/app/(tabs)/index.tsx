@@ -53,7 +53,7 @@ export default function HomeScreen() {
     if(isGameOver || isPause) {
       return;
     }
-    if (magnitude >= 3 && !isWaiting.current && !showCatch) {
+    if (magnitude >= 2.5 && !isWaiting.current && !showCatch) {
       isWaiting.current = true;
       setFishRodId(1);
 
