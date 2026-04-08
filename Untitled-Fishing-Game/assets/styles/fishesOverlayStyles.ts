@@ -3,6 +3,25 @@ import { Dimensions, StyleSheet } from 'react-native';
 const { width: SCREEN_W } = Dimensions.get('window');
 
 export const styles = StyleSheet.create({
+    fish: {
+      ...StyleSheet.absoluteFillObject,
+      width: '100%',
+      height: '100%',
+    },
+    fishBackground: {
+      position: 'absolute',
+      width: '100%',
+      height: '100%',
+      opacity: 0.18,
+    },
+    overlayCard: {
+      width: SCREEN_W * 0.85,
+      minHeight: 360,
+      borderRadius: 14,
+      overflow: 'hidden',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
     container: {
         ...StyleSheet.absoluteFillObject,
         backgroundColor: 'rgba(0, 0, 0, 0.8)',
@@ -11,8 +30,8 @@ export const styles = StyleSheet.create({
         zIndex: 9999,
     },
     card: {
-        width: SCREEN_W * 0.85,
-        backgroundColor: '#000000',
+        width: '100%',
+        backgroundColor: 'rgba(0, 0, 0, 0.9)',
         borderRadius: 10,
         padding: 20,
         borderWidth: 4,
