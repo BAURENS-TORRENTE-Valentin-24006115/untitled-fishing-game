@@ -1,7 +1,9 @@
+import { selectRandomFishWithRarity } from '@/components/catching/fish_catching_logic';
 import FishOverlay from '@/components/catching/fish_overlay';
 import FishingCatch from '@/components/catching/fishing_catch';
 import GameManager from '@/components/gameManager/GameManager';
 import { HungerBar } from '@/components/hunger-bar';
+import useAccelerometer from '@/components/move/useAccelerometer';
 import PauseMenu from "@/components/PauseMenu/PauseMenu";
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -10,8 +12,6 @@ import { Audio } from 'expo-av';
 import { Image } from 'expo-image';
 import { useEffect, useRef, useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import { selectRandomFishWithRarity } from '../../components/catching/fish_catching_logic';
-import useAccelerometer from '../../components/move/useAccelerometer';
 
 export default function HomeScreen() {
   const magnitude = useAccelerometer()["magnitude"];
@@ -26,6 +26,7 @@ export default function HomeScreen() {
   const [isGameOver, setIsGameOver] = useState(false);
   const [isPause, setIsPause] = useState(false);
   const [sound, setSound] = useState<Audio.Sound | null>(null);
+  const [isBestScore, setisBestScore] = useState(0);
 
   async function playBackgroundSound() {
     const { sound: newSound } = await Audio.Sound.createAsync(
@@ -46,7 +47,10 @@ export default function HomeScreen() {
   const playSwooshSound = async () => {
     await Audio.Sound.createAsync(
       require('@/assets/Sounds/FishingRod.mp3'),
-        { shouldPlay: true }
+        {
+          shouldPlay: true,
+          volume: 0.2
+        }
     );
   };
 
@@ -54,7 +58,7 @@ export default function HomeScreen() {
     await Audio.Sound.createAsync(
       require('@/assets/Sounds/catchFish.mp3'),
         { shouldPlay: true,
-          volume: 0.2,
+          volume: 0.1,
         }
     );
   };
@@ -90,7 +94,8 @@ export default function HomeScreen() {
   const fish_rod_paths = [
     require('@/assets/fishing_rod/canne_a_peche_sized.png'),
     require('@/assets/fishing_rod/canne_a_peche_chargement_sized.png'),
-    require('@/assets/fishing_rod/canne_a_peche_lancer_sized.png')
+    require('@/assets/fishing_rod/canne_a_peche_lancer_sized.png'),
+    require('@/assets/fishing_rod/canne_a_peche_vide_sized.png')
   ];
   const [fishRodId, setFishRodId] = useState(0);
 
@@ -177,12 +182,21 @@ export default function HomeScreen() {
     return () => clearInterval(interval);
   }, [isGameOver, isPause]);
 
+  //vérifie le meilleur score :
+  useEffect(()=>{
+    if (isBestScore < score){
+      setisBestScore(score);
+    }else {
+      setisBestScore(isBestScore);
+    }
+  })
+
   const handleCatchResult = (result: 'success' | 'fail') => {
     setShowCatch(false);
     if (result === 'success') {
       playCaughtFish();
       setCaughtFish(selectRandomFishWithRarity());
-      setFishRodId(0);
+      setFishRodId(3);
     } else {
       isWaiting.current = false;
       setFishRodId(0);
@@ -200,6 +214,7 @@ export default function HomeScreen() {
     setIsPause(false);
     SetTickSpeed(3000);
     setFishRodId(0);
+    setisBestScore(isBestScore);
     isWaiting.current = false;
   }
 
@@ -254,15 +269,17 @@ export default function HomeScreen() {
             setScore(prev => prev + caughtFish.scoreFish)
             setHunger(prev => Math.min(prev + caughtFish.valeur_nutritive, 20));
             setCaughtFish(null);
+            setFishRodId(0);
             isWaiting.current = false;
           }} 
         />
       )}
       {isGameOver && (
         <GameManager
-          score={score}
-          timer={timerToTime(timer)}
-          onRestart={resetGame}
+            bestScore={isBestScore}
+            score={score}
+            timer={timerToTime(timer)}
+            onRestart={resetGame}
         />
       )}
       {isPause && (
@@ -325,6 +342,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     letterSpacing: 2,
+    zIndex: 100,
     fontFamily: 'monospace',
     textShadowColor: 'rgba(0, 0, 0, 0.75)',
     textShadowOffset: { width: 2, height: 2 },
