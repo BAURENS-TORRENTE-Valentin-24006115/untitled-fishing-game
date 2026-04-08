@@ -1,0 +1,52 @@
+{
+  "poissons": [
+    {
+      "nom": "Bernard l'hermite",
+      "valeur_nutritive": 2,
+      "rarete": "Commun",
+      "description": "Il semblerais que votre appat tombe trop proche des rochers.",
+      "image" : "/assets/fish/hermit_crab_sized.png",
+      "scoreFish": 500
+    },
+    {
+      "nom": "Dorade",
+      "valeur_nutritive": 3,
+      "rarete": "Rare",
+      "description": "Ce poisson semble être leger pour votre appétit...",
+      "image":  "/assets/fish/dorade_sized.png",
+      "scoreFish": 750
+    },
+    {
+      "nom": "Vivaneau vermillon",
+      "valeur_nutritive": 3,
+      "rarete": "Rare",
+      "description": "Son rouge vif est un spectacle à voir !",
+      "image":  "/assets/fish/vermillion_snapper_sized.png",
+      "scoreFish": 750
+    },
+    {
+      "nom": "Poisson Clown",
+      "valeur_nutritive": 5,
+      "rarete": "Légendaire",
+      "description": "C'est comme Nemo du film Nemo !",
+      "image":  "/assets/fish/nemo_sized.png",
+      "scoreFish": 1500
+    },
+    {
+      "nom": "Thon",
+      "valeur_nutritive": 7,
+      "rarete": "Légendaire",
+      "description": "Ce poisson vient des au salées, comment avez vous fait pour attrapé ca dans une rivière ?",
+      "image":  "/assets/fish/tuna_sized.png",
+      "scoreFish": 1000
+    },
+    {
+      "nom": "Sushi Géant",
+      "valeur_nutritive": 10,
+      "rarete": "Exotique",
+      "description": "Comment vous avez réussi à attraper ça ?",
+      "image":  "/assets/fish/sushi_sized.png",
+      "scoreFish": 2000
+    }
+  ]
+}
